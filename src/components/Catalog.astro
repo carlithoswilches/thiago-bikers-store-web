@@ -1,0 +1,117 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "@/data/site";
+import { unsplash } from "@/data/types";
+import TarjetaInclinada from "@/components/animados/TarjetaInclinada";
+
+// Sección opcional: si el sitio no tiene catálogo, no se pinta nada
+const { catalog } = site;
+
+// Enlace de WhatsApp con el nombre del producto ya escrito en el mensaje
+// (el saludo usa la primera palabra del nombre corto: "Thiago Bikers" -> "Hola Thiago")
+const pedirHref = (producto: string) =>
+  site.whatsapp
+    ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
+        `Hola ${site.shortName.split(" ")[0]}, vi en tu página el producto "${producto}" y quiero cotizarlo.`,
+      )}`
+    : undefined;
+---
+
+{
+  catalog && (
+    <section id="catalogo" class="relative border-t border-line py-24 md:py-32">
+      <div class="mx-auto max-w-7xl px-5">
+        {/* Encabezado: título a la izquierda, texto y enlace al catálogo completo a la derecha */}
+        <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
+          <div class="lg:col-span-7">
+            <p class="eyebrow" data-reveal>{catalog.eyebrow}</p>
+            <h2 class="mt-5 font-display text-4xl leading-[1.02] tracking-tight md:text-6xl" data-reveal style="--d:80ms">
+              {catalog.title}
+            </h2>
+          </div>
+          <div class="lg:col-span-5" data-reveal style="--d:140ms">
+            <p class="text-lg text-muted">{catalog.intro}</p>
+            {catalog.fullCatalog && (
+              <a
+                href={catalog.fullCatalog.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="pill mt-6 border border-fg/15 text-fg hover:border-primary hover:bg-primary hover:text-primary-fg"
+              >
+                {catalog.fullCatalog.label}
+                <Icon name="bx:right-arrow-alt" class="h-4 w-4" />
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* Tarjetas de producto: 2 columnas en celular, 4 en computador */}
+        <div class="mt-14 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+          {catalog.items.map((item, i) => {
+            const href = pedirHref(item.title);
+            return (
+              // Aparece escalonada y se inclina en 3D con el mouse (client:idle: se carga sin frenar la portada)
+              <TarjetaInclinada client:idle indice={i} claseRedondeo="rounded-[1.5rem] sm:rounded-[2rem]">
+              <article class="group flex h-full flex-col overflow-hidden rounded-[1.5rem] bg-surface sm:rounded-[2rem]">
+                <div class="relative overflow-hidden">
+                  <img
+                    src={unsplash(item.image.id, 800)}
+                    alt={item.image.alt}
+                    loading="lazy"
+                    width="800"
+                    height="1000"
+                    class="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <span class="absolute left-3 top-3 rounded-full bg-bg/85 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-fg backdrop-blur sm:left-4 sm:top-4">
+                    {item.tag}
+                  </span>
+                </div>
+                <div class="flex flex-1 flex-col p-4 sm:p-6">
+                  <h3 class="font-display text-lg leading-tight tracking-tight text-fg sm:text-2xl">{item.title}</h3>
+                  {/* La descripción se oculta en celular para que las tarjetas no queden muy largas */}
+                  <p class="mt-2 hidden text-sm text-muted sm:block">{item.description}</p>
+                  {/* El botón queda siempre al fondo de la tarjeta, aunque los textos tengan distinto largo */}
+                  {href && (
+                    <div class="mt-auto pt-4 sm:pt-5">
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="pill w-full bg-primary px-4 py-3 text-primary-fg hover:bg-fg hover:text-bg sm:w-auto"
+                      >
+                        <Icon name="bx:bxl-whatsapp" class="h-5 w-5" />
+                        Pedir este
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </article>
+              </TarjetaInclinada>
+            );
+          })}
+        </div>
+
+        {/* Cierre: lo demás que hay en el catálogo completo */}
+        {catalog.more && (
+          <div
+            class="mt-10 flex flex-col gap-5 rounded-[2rem] border border-line p-6 sm:flex-row sm:items-center sm:justify-between md:p-8"
+            data-reveal
+          >
+            <p class="max-w-2xl text-muted">{catalog.more}</p>
+            {catalog.fullCatalog && (
+              <a
+                href={catalog.fullCatalog.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="pill shrink-0 bg-fg text-bg hover:bg-primary hover:text-primary-fg"
+              >
+                <Icon name="bx:bxl-whatsapp" class="h-5 w-5" />
+                {catalog.fullCatalog.label}
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}

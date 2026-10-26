@@ -1,0 +1,252 @@
+---
+// Página de contacto: canales, formulario de cotización (arma el mensaje y lo abre en WhatsApp; no guarda datos)
+// y canal de peticiones, quejas y reclamos (PQR). Sin dirección ni mapa hasta que Thiago actualice su ubicación.
+import { Icon } from "astro-icon/components";
+import PageLayout from "@/layouts/PageLayout.astro";
+import { site } from "@/data/site";
+import { mailHref, socialLinks, tel2Href, telHref, whatsappHref } from "@/data/links";
+
+// Opciones del formulario: los productos del catálogo y algunos generales
+const productos = [...(site.catalog?.items.map((i) => i.title) ?? []), "Gorras bordadas", "Otra prenda o producto"];
+const empresa = site.legal?.razonSocial ?? site.name;
+
+// Enlaces para radicar una PQR con el asunto ya escrito
+const pqrMail = site.email
+  ? `mailto:${site.email}?subject=${encodeURIComponent(`PQR - ${site.name}`)}&body=${encodeURIComponent(
+      "Nombre completo:\nNúmero de identificación:\nTeléfono:\nQué pasó (con fecha y número de pedido, si lo tienes):\nQué solicito:\n",
+    )}`
+  : undefined;
+const pqrWhatsapp = site.whatsapp
+  ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent("Hola, quiero presentar una petición, queja o reclamo:")}`
+  : undefined;
+---
+
+<PageLayout
+  eyebrow="Contacto"
+  title="Hablemos de tu uniforme"
+  description={`Cotiza con ${site.name} por WhatsApp, teléfono o correo. Atendemos ${site.hours.toLowerCase()}.`}
+  intro="Cuéntanos qué necesitas y Thiago te ayuda con el diseño. La forma más rápida es WhatsApp."
+>
+  <section class="py-16 md:py-24">
+    <div class="mx-auto grid max-w-7xl gap-6 px-5 lg:grid-cols-12">
+      <!-- Canales de contacto -->
+      <div class="relative overflow-hidden rounded-[2.5rem] bg-primary p-8 text-primary-fg sm:p-10 lg:col-span-5">
+        <div aria-hidden="true" class="absolute -bottom-24 -right-24 h-72 w-72 rounded-full border-[48px] border-current opacity-10"></div>
+        <dl class="relative space-y-6">
+          {
+            site.phoneDisplay && (
+              <div class="flex gap-4">
+                <Icon name="bx:bxl-whatsapp" class="mt-0.5 h-6 w-6 shrink-0 opacity-80" />
+                <div>
+                  <dt class="text-xs uppercase tracking-widest opacity-70">WhatsApp</dt>
+                  <dd class="mt-1 text-lg font-semibold">
+                    <a href={whatsappHref} target="_blank" rel="noopener noreferrer" class="hover:underline">{site.phoneDisplay}</a>
+                  </dd>
+                </div>
+              </div>
+            )
+          }
+          {
+            site.phone2 && (
+              <div class="flex gap-4">
+                <Icon name="bx:phone" class="mt-0.5 h-6 w-6 shrink-0 opacity-80" />
+                <div>
+                  <dt class="text-xs uppercase tracking-widest opacity-70">Teléfonos</dt>
+                  <dd class="mt-1 text-lg font-semibold">
+                    <a href={telHref} class="hover:underline">{site.phoneDisplay}</a>
+                    {" · "}
+                    <a href={tel2Href} class="hover:underline">{site.phone2.display}</a>
+                  </dd>
+                </div>
+              </div>
+            )
+          }
+          {
+            site.email && (
+              <div class="flex gap-4">
+                <Icon name="bx:envelope" class="mt-0.5 h-6 w-6 shrink-0 opacity-80" />
+                <div>
+                  <dt class="text-xs uppercase tracking-widest opacity-70">Correo</dt>
+                  <dd class="mt-1 break-all text-lg font-semibold">
+                    <a href={mailHref} class="hover:underline">{site.email}</a>
+                  </dd>
+                </div>
+              </div>
+            )
+          }
+          <div class="flex gap-4">
+            <Icon name="bx:time-five" class="mt-0.5 h-6 w-6 shrink-0 opacity-80" />
+            <div>
+              <dt class="text-xs uppercase tracking-widest opacity-70">Horario</dt>
+              <dd class="mt-1 text-lg font-semibold">{site.hours}</dd>
+            </div>
+          </div>
+        </dl>
+
+        {
+          socialLinks.length > 0 && (
+            <div class="relative mt-10 flex items-center gap-3 border-t border-primary-fg/20 pt-6 text-sm">
+              <span class="opacity-75">Síguenos</span>
+              {socialLinks.map((s) => (
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${site.shortName} en ${s.label}`}
+                  class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-fg/15 transition hover:bg-primary-fg hover:text-primary"
+                >
+                  <Icon name={s.icon} class="h-5 w-5" />
+                </a>
+              ))}
+            </div>
+          )
+        }
+
+        {site.legal && <p class="relative mt-8 text-xs opacity-75">{empresa} · NIT {site.legal.nit}</p>}
+      </div>
+
+      <!-- Formulario de cotización: arma el mensaje y abre WhatsApp -->
+      <form id="cotizacion" data-whatsapp={site.whatsapp} class="rounded-[2.5rem] border border-line bg-surface p-8 sm:p-10 lg:col-span-7" novalidate>
+        <h2 class="font-display text-3xl leading-tight tracking-tight md:text-4xl">Cotiza tu uniforme</h2>
+        <p class="mt-3 text-muted">Llena los datos y se abre WhatsApp con tu mensaje listo para enviar.</p>
+
+        <div class="mt-8 grid gap-5 sm:grid-cols-2">
+          <label class="block">
+            <span class="text-sm font-semibold text-fg">Tu nombre *</span>
+            <input name="nombre" type="text" required autocomplete="name" class="campo" />
+          </label>
+          <label class="block">
+            <span class="text-sm font-semibold text-fg">Club, equipo o empresa</span>
+            <input name="club" type="text" autocomplete="organization" class="campo" />
+          </label>
+          <label class="block">
+            <span class="text-sm font-semibold text-fg">¿Qué necesitas? *</span>
+            <select name="producto" required class="campo">
+              <option value="">Elige una opción</option>
+              {productos.map((p) => <option value={p}>{p}</option>)}
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-sm font-semibold text-fg">Cantidad aproximada</span>
+            <input name="cantidad" type="number" min="1" inputmode="numeric" class="campo" />
+          </label>
+          <label class="block sm:col-span-2">
+            <span class="text-sm font-semibold text-fg">Cuéntanos más</span>
+            <textarea name="detalle" rows="4" placeholder="Colores, tallas, para cuándo lo necesitas…" class="campo"></textarea>
+          </label>
+        </div>
+
+        <!-- Autorización de tratamiento de datos (Ley 1581 de 2012) -->
+        <label class="mt-6 flex items-start gap-3 text-sm text-muted">
+          <input name="autorizo" type="checkbox" required class="mt-1 h-5 w-5 shrink-0 accent-[var(--color-primary)]" />
+          <span>
+            Autorizo a {empresa} a usar estos datos para responder mi cotización, según la{" "}
+            <a href="/politica-de-datos" class="font-semibold text-fg underline underline-offset-2 hover:text-primary">política de tratamiento de datos personales</a>. *
+          </span>
+        </label>
+
+        <p data-error hidden class="mt-4 rounded-2xl bg-primary/15 px-4 py-3 text-sm text-fg">Completa tu nombre, elige qué necesitas y marca la autorización.</p>
+
+        <button type="submit" class="pill mt-6 w-full bg-primary py-4 text-base text-primary-fg hover:opacity-90 sm:w-auto">
+          <Icon name="bx:bxl-whatsapp" class="h-5 w-5" />
+          Enviar por WhatsApp
+        </button>
+        <p class="mt-4 text-xs text-muted">Esta página no guarda tus datos: el mensaje lo envías tú desde WhatsApp.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Peticiones, quejas y reclamos -->
+  <section id="pqr" class="border-t border-line py-16 md:py-24">
+    <div class="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <p class="eyebrow">PQR</p>
+        <h2 class="mt-5 font-display text-3xl leading-tight tracking-tight md:text-5xl">Peticiones, quejas y reclamos</h2>
+      </div>
+      <div class="text-muted lg:col-span-7">
+        <p class="text-lg">
+          Si tienes una petición, queja o reclamo sobre un pedido o sobre tus datos personales, escríbenos con esta información:
+        </p>
+        <ul class="mt-5 list-disc space-y-1 pl-5 marker:text-primary">
+          <li>Tu nombre completo y número de identificación.</li>
+          <li>Un teléfono o correo para responderte.</li>
+          <li>Qué pasó, con la fecha y el número de pedido, si lo tienes.</li>
+          <li>Qué solicitas.</li>
+        </ul>
+        <p class="mt-5">
+          Te respondemos en máximo 15 días hábiles. Las solicitudes sobre datos personales siguen los plazos de nuestra{" "}
+          <a href="/politica-de-datos" class="font-semibold text-fg underline underline-offset-2 hover:text-primary">política de tratamiento de datos</a>.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          {
+            pqrMail && (
+              <a href={pqrMail} class="pill bg-fg text-bg hover:bg-primary hover:text-primary-fg">
+                <Icon name="bx:envelope" class="h-5 w-5" />
+                Enviar por correo
+              </a>
+            )
+          }
+          {
+            pqrWhatsapp && (
+              <a href={pqrWhatsapp} target="_blank" rel="noopener noreferrer" class="pill border border-fg/20 text-fg hover:border-primary hover:bg-primary hover:text-primary-fg">
+                <Icon name="bx:bxl-whatsapp" class="h-5 w-5" />
+                Enviar por WhatsApp
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  /* Campos del formulario con el estilo oscuro de la página */
+  .campo {
+    margin-top: 0.5rem;
+    display: block;
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-bg);
+    padding: 0.8rem 1rem;
+    color: var(--color-fg);
+    transition: border-color 0.2s;
+  }
+  .campo:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+  .campo::placeholder {
+    color: color-mix(in srgb, var(--color-muted) 70%, transparent);
+  }
+</style>
+
+<script>
+  // Arma el mensaje de cotización y lo abre en WhatsApp (los datos no pasan por ningún servidor de la página)
+  const form = document.getElementById("cotizacion") as HTMLFormElement;
+  const error = form.querySelector("[data-error]") as HTMLElement;
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      error.hidden = false;
+      form.reportValidity();
+      return;
+    }
+    error.hidden = true;
+
+    const d = new FormData(form);
+    const valor = (campo: string) => String(d.get(campo) ?? "").trim();
+    const lineas = [
+      `Hola Thiago, soy ${valor("nombre")}${valor("club") ? ` de ${valor("club")}` : ""}.`,
+      `Quiero cotizar: ${valor("producto")}.`,
+      valor("cantidad") && `Cantidad aproximada: ${valor("cantidad")}.`,
+      valor("detalle"),
+      "(Mensaje enviado desde el formulario de la página web)",
+    ].filter(Boolean);
+
+    const url = `https://wa.me/${form.dataset.whatsapp}?text=${encodeURIComponent(lineas.join("\n"))}`;
+    window.open(url, "_blank", "noopener");
+  });
+</script>

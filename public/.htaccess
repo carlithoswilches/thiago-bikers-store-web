@@ -1,0 +1,24 @@
+# Thiago Bikers Store · configuración del servidor en Hostinger
+# (este archivo se copia tal cual a la carpeta pública del dominio al compilar)
+# El paso a https (candado) se activa desde hPanel con "Forzar HTTPS", cuando el certificado SSL ya esté instalado.
+
+# Página de error propia cuando alguien abre una dirección que no existe
+ErrorDocument 404 /404.html
+
+<IfModule mod_headers.c>
+  # Caché: los archivos de /_astro/ llevan una huella en el nombre (cambia en cada versión),
+  # así que el navegador puede guardarlos un año. Las fotos, una semana. Las páginas, siempre frescas.
+  <FilesMatch "\.(js|css|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(jpg|jpeg|png|webp|svg|ico)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
+  # Seguridad básica
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

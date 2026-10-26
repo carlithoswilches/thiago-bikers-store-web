@@ -1,0 +1,52 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "@/data/site";
+import Contador from "@/components/animados/Contador";
+
+const deGoogle = site.rating
+  ? [
+      { value: site.rating.toFixed(1), label: "calificación en Google", star: true },
+      { value: (site.reviews ?? 0).toLocaleString("es-CO"), label: "opiniones de clientes" },
+    ]
+  : [];
+const facts = [...deGoogle, ...site.facts].slice(0, 4);
+
+// Las cifras numéricas ("6,5 mil", "715") cuentan desde cero al aparecer; las de texto ("Diseño") se quedan quietas.
+// Devuelve el número, sus decimales y lo que va después (" mil"), o null si no empieza por un número.
+const comoNumero = (valor: string) => {
+  const m = /^(\d+(?:,\d+)?)(\s.*)?$/.exec(valor.trim());
+  if (!m) return null;
+  const [entero, decimal = ""] = m[1].split(",");
+  return { hasta: Number(`${entero}.${decimal || 0}`), decimales: decimal.length, sufijo: m[2] ?? "" };
+};
+const cifras = facts.map((f) => ({ ...f, num: comoNumero(f.value) }));
+---
+
+<section class="bg-ink text-ink-fg">
+  <div class="mx-auto grid max-w-7xl grid-cols-2 px-5 md:grid-cols-4">
+    {
+      cifras.map((fact, i) => (
+        <div
+          class:list={[
+            "flex flex-col justify-between gap-6 py-10 md:py-14",
+            i % 2 === 1 && "border-l border-ink-fg/15 pl-6",
+            i > 1 && "border-t border-ink-fg/15 md:border-t-0",
+            i >= 2 && i % 2 === 0 && "md:border-l md:pl-6",
+          ]}
+          data-reveal
+          style={`--d:${i * 90}ms`}
+        >
+          <span class="text-xs font-semibold uppercase tracking-[0.22em] text-ink-fg/55">0{i + 1}</span>
+          <div>
+            <p class="flex items-center gap-2 font-display text-4xl leading-none md:text-5xl">
+              {/* client:load: así arranca en cero antes de que la franja llegue a la pantalla */}
+              {fact.num ? <Contador client:load hasta={fact.num.hasta} decimales={fact.num.decimales} sufijo={fact.num.sufijo} /> : fact.value}
+              {"star" in fact && fact.star && <Icon name="bx:bxs-star" class="h-7 w-7 text-accent" />}
+            </p>
+            <p class="mt-3 text-sm text-ink-fg/65">{fact.label}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>

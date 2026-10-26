@@ -1,0 +1,89 @@
+---
+import "../styles/global.css";
+// Fuentes guardadas dentro de la página (solo caracteres latinos, incluye tildes y ñ): no se conecta a Google Fonts
+import "@fontsource/saira/latin-400.css";
+import "@fontsource/saira/latin-500.css";
+import "@fontsource/saira/latin-600.css";
+import "@fontsource/saira-condensed/latin-600.css";
+import "@fontsource/saira-condensed/latin-700.css";
+import "@fontsource/saira-condensed/latin-800.css";
+import { site } from "@/data/site";
+import { demo } from "@/data/demo";
+import Navbar from "@/components/Navbar.astro";
+import Footer from "@/components/Footer.astro";
+import WhatsApp from "@/components/WhatsApp.astro";
+import CookieBanner from "@/components/CookieBanner.astro";
+
+// Las páginas internas (contacto, políticas) pueden pasar su propio título y descripción
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { fonts, seo } = site;
+const title = Astro.props.title ? `${Astro.props.title} · ${site.name}` : seo.title;
+const description = Astro.props.description ?? seo.description;
+const fontVars = `--ff-display:'${fonts.display}';--ff-body:'${fonts.body}'`;
+---
+
+<!doctype html>
+<html lang="es" style={fontVars}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {demo.enabled && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <!-- Íconos: el escudo del logo de Thiago -->
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {fonts.href && <link rel="stylesheet" href={fonts.href} />}
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
+    <!-- Sin JavaScript, los efectos animados (que arrancan ocultos) se muestran tal cual -->
+    <noscript>
+      <style>
+        [data-animado],
+        [data-animado] * {
+          opacity: 1 !important;
+          filter: none !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+  </head>
+  <body class="min-h-screen overflow-x-clip">
+    {
+      demo.enabled && (
+        <div class="bg-ink px-4 py-2 text-center text-xs text-ink-fg/75">
+          Vista previa de la nueva página de {site.name}, en construcción · Diseño de{" "}
+          <strong class="font-semibold text-ink-fg">{demo.studio}</strong>
+        </div>
+      )
+    }
+    <Navbar />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <WhatsApp />
+    <CookieBanner />
+    <script>
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              io.unobserve(entry.target);
+            }
+          }
+        },
+        { rootMargin: "0px 0px -8% 0px" },
+      );
+      document.querySelectorAll("[data-reveal]").forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

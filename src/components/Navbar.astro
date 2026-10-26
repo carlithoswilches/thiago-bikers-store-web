@@ -1,0 +1,74 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "@/data/site";
+import { primaryHref, isExternal, whatsappHref } from "@/data/links";
+
+const ctaLabel = whatsappHref ? "Escríbenos" : "Llámanos";
+---
+
+<header class="sticky top-0 z-40 border-b border-line/70 bg-bg/80 backdrop-blur-xl">
+  <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-6 px-5">
+    {
+      site.logo ? (
+        // Logo del negocio (imagen); en celular un poco más pequeño
+        <a href="/" class="flex shrink-0 items-center" aria-label={`${site.name}, ir al inicio`}>
+          <img src={site.logo.src} alt={site.logo.alt} width={site.logo.width} height={site.logo.height} class="h-11 w-auto sm:h-[3.25rem]" />
+        </a>
+      ) : (
+        <a href="/" class="group flex items-baseline gap-2" aria-label={site.name}>
+          <span class="font-display text-2xl leading-none tracking-tight text-fg">{site.shortName}</span>
+          <span class="hidden h-1.5 w-1.5 rounded-full bg-primary transition-transform group-hover:scale-150 sm:block"></span>
+        </a>
+      )
+    }
+
+    <nav class="hidden items-center gap-1 rounded-full border border-line bg-surface/70 p-1 text-sm md:flex">
+      {
+        site.nav.map((item) => (
+          <a href={item.href} class="rounded-full px-4 py-2 text-muted transition hover:bg-bg hover:text-fg">
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={primaryHref}
+        target={isExternal(primaryHref) ? "_blank" : undefined}
+        rel="noopener noreferrer"
+        class="pill hidden bg-fg py-2.5 text-bg hover:bg-primary hover:text-primary-fg sm:inline-flex"
+      >
+        {ctaLabel}
+        <Icon name="bx:right-arrow-alt" class="h-4 w-4" />
+      </a>
+
+      <details class="group relative md:hidden">
+        <summary
+          class="flex h-11 w-11 list-none items-center justify-center rounded-full border border-line bg-surface [&::-webkit-details-marker]:hidden"
+          aria-label="Abrir menú"
+        >
+          <Icon name="bx:menu-alt-right" class="h-5 w-5 group-open:hidden" />
+          <Icon name="bx:x" class="hidden h-5 w-5 group-open:block" />
+        </summary>
+        <div class="absolute right-0 top-14 w-60 rounded-3xl border border-line bg-bg p-3 shadow-2xl">
+          {
+            site.nav.map((item) => (
+              <a href={item.href} class="block rounded-2xl px-4 py-3 text-fg hover:bg-surface">
+                {item.label}
+              </a>
+            ))
+          }
+          <a
+            href={primaryHref}
+            target={isExternal(primaryHref) ? "_blank" : undefined}
+            rel="noopener noreferrer"
+            class="pill mt-2 w-full bg-primary text-primary-fg"
+          >
+            {ctaLabel}
+          </a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,58 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "@/data/site";
+import { unsplash } from "@/data/types";
+import { primaryHref, isExternal } from "@/data/links";
+
+const { services } = site;
+---
+
+<section id="servicios" class="relative py-24 md:py-32">
+  <div class="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-12 lg:gap-10">
+    <!-- Columna fija con encabezado -->
+    <div class="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+      <p class="eyebrow" data-reveal>{services.eyebrow}</p>
+      <h2 class="mt-5 font-display text-4xl leading-[1.02] tracking-tight md:text-5xl" data-reveal style="--d:80ms">
+        {services.title}
+      </h2>
+      <p class="mt-6 text-lg text-muted" data-reveal style="--d:140ms">{services.intro}</p>
+
+      <figure class="relative mt-10 hidden overflow-hidden rounded-[2rem] rounded-tl-[6rem] lg:block" data-reveal style="--d:200ms">
+        <img src={unsplash(services.image.id, 900)} alt={services.image.alt} loading="lazy" class="aspect-[4/5] w-full object-cover" />
+      </figure>
+
+      <a
+        href={primaryHref}
+        target={isExternal(primaryHref) ? "_blank" : undefined}
+        rel="noopener noreferrer"
+        class="pill mt-8 border border-fg/15 text-fg hover:border-primary hover:bg-primary hover:text-primary-fg"
+        data-reveal
+      >
+        Cotiza tu uniforme
+        <Icon name="bx:right-arrow-alt" class="h-4 w-4" />
+      </a>
+    </div>
+
+    <!-- Índice editorial de servicios -->
+    <ol class="lg:col-span-8 lg:col-start-5 lg:pl-10">
+      {
+        services.items.map((item, i) => (
+          <li class="group border-t border-line last:border-b" data-reveal style={`--d:${i * 60}ms`}>
+            <div class="-mx-4 grid grid-cols-[2.5rem_1fr] items-start gap-x-5 gap-y-3 rounded-[1.75rem] px-4 py-8 transition-colors duration-300 hover:bg-surface sm:grid-cols-[3.5rem_1fr_auto] md:py-10">
+              <span class="pt-1 font-display text-lg text-muted transition-colors group-hover:text-primary">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <h3 class="font-display text-2xl leading-tight tracking-tight text-fg md:text-[2rem]">{item.title}</h3>
+                <p class="mt-3 max-w-xl text-muted">{item.description}</p>
+              </div>
+              <span class="col-start-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-surface text-primary transition duration-300 group-hover:rotate-[-8deg] group-hover:bg-primary group-hover:text-primary-fg sm:col-start-3 sm:row-start-1">
+                <Icon name={item.icon} class="h-7 w-7" />
+              </span>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

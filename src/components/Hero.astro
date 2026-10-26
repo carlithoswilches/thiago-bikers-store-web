@@ -1,0 +1,118 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "@/data/site";
+import { unsplash } from "@/data/types";
+import { primaryHref, isExternal, hasAddress } from "@/data/links";
+// Efectos animados (React + Motion): título que aparece palabra por palabra y botón con efecto imán
+import TituloPortada from "@/components/animados/TituloPortada";
+import Iman from "@/components/animados/Iman";
+
+const { hero } = site;
+// Títulos largos usan una escala menor para no invadir la imagen
+const isLongTitle = `${hero.titleStart} ${hero.titleAccent} ${hero.titleEnd ?? ""}`.trim().length > 44;
+// Con calificación: "★ 4,9 en Google · 250 opiniones". Sin ella: el sello propio del negocio.
+const badgeText = site.rating
+  ? `★ ${site.rating.toFixed(1)} en Google · ${(site.reviews ?? 0).toLocaleString("es-CO")} opiniones · `
+  : `${site.badge?.text ?? site.category} · `;
+const badgeValue = site.rating ? site.rating.toFixed(1) : (site.badge?.value ?? "");
+---
+
+<section class="relative">
+  <div class="grid lg:min-h-[calc(100svh-4.5rem)] lg:grid-cols-12">
+    <!-- Texto: alineado al contenedor por la izquierda -->
+    <div
+      class="relative z-10 flex flex-col justify-center px-5 pb-14 pt-12 sm:px-8 lg:col-span-6 lg:py-20 lg:pl-[max(1.25rem,calc((100vw_-_80rem)/2_+_1.25rem))] lg:pr-12"
+    >
+      <p class="eyebrow" data-reveal>{site.category} — {site.neighborhood}</p>
+
+      <h1
+        class:list={[
+          "mt-7 font-display leading-[0.95] tracking-[-0.02em] text-fg",
+          isLongTitle ? "text-[clamp(2.4rem,4.9vw,4.5rem)]" : "text-[clamp(2.6rem,6.2vw,5.8rem)]",
+        ]}
+      >
+        <!-- Aparece palabra por palabra al cargar (client:load porque está arriba, a la vista) -->
+        <TituloPortada
+          client:load
+          partes={[{ texto: hero.titleStart }, { texto: hero.titleAccent, acento: true }, { texto: hero.titleEnd ?? "" }]}
+          claseAcento="text-primary underline decoration-accent decoration-[0.07em] underline-offset-[0.14em] [text-decoration-skip-ink:none]"
+        />
+      </h1>
+
+      <p class="mt-8 max-w-xl text-lg leading-relaxed text-muted md:text-xl" data-reveal style="--d:160ms">
+        {hero.subtitle}
+      </p>
+
+      <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4" data-reveal style="--d:240ms">
+        <!-- Efecto imán: solo se activa en computadores con mouse (client:media) -->
+        <Iman client:media="(hover: hover) and (pointer: fine)" padding={90} magnetStrength={3}>
+          <a
+            href={primaryHref}
+            target={isExternal(primaryHref) ? "_blank" : undefined}
+            rel="noopener noreferrer"
+            class="pill group bg-primary px-8 py-4 text-base text-primary-fg shadow-[0_20px_40px_-20px_var(--color-primary)]"
+          >
+            {hero.primaryCta}
+            <Icon name="bx:right-arrow-alt" class="h-5 w-5 transition-transform group-hover:translate-x-1" />
+          </a>
+        </Iman>
+        <a href="#servicios" class="group inline-flex items-center gap-2 font-semibold text-fg">
+          <span class="border-b-2 border-fg/20 pb-0.5 transition group-hover:border-primary">{hero.secondaryCta}</span>
+          <Icon name="bx:down-arrow-alt" class="h-5 w-5 transition-transform group-hover:translate-y-0.5" />
+        </a>
+      </div>
+
+      <ul class="mt-12 flex flex-wrap gap-3 text-sm" data-reveal style="--d:320ms">
+        <li class="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-muted">
+          <Icon name="bx:time-five" class="h-4 w-4 text-primary" />
+          {site.hours}
+        </li>
+        {/* La ubicación solo se muestra cuando hay dirección confirmada */}
+        {
+          hasAddress && (
+            <li class="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-muted">
+              <Icon name="bx:map" class="h-4 w-4 text-primary" />
+              {site.address}
+            </li>
+          )
+        }
+      </ul>
+    </div>
+
+    <!-- Imagen con corte diagonal -->
+    <div class="relative min-h-[26rem] sm:min-h-[34rem] lg:col-span-6 lg:min-h-0">
+      <img
+        src={unsplash(hero.image.id, 1600)}
+        alt={hero.image.alt}
+        class="absolute inset-0 h-full w-full object-cover [clip-path:polygon(0_6%,100%_0,100%_100%,0_100%)] lg:[clip-path:polygon(16%_0,100%_0,100%_100%,0_100%)]"
+        fetchpriority="high"
+      />
+      <div
+        class="absolute inset-0 bg-linear-to-tr from-black/45 via-transparent to-transparent [clip-path:polygon(0_6%,100%_0,100%_100%,0_100%)] lg:[clip-path:polygon(16%_0,100%_0,100%_100%,0_100%)]"
+      >
+      </div>
+
+      <!-- Foto secundaria flotante -->
+      <figure
+        class="absolute right-5 top-10 hidden w-40 animate-drift overflow-hidden rounded-3xl border-[6px] border-bg shadow-2xl [--r:4deg] sm:block lg:right-10 lg:top-16 lg:w-52"
+      >
+        <img src={unsplash(hero.secondaryImage.id, 500)} alt={hero.secondaryImage.alt} class="aspect-[4/5] w-full object-cover" />
+      </figure>
+
+      <!-- Sello giratorio de reputación -->
+      <div
+        class="absolute bottom-6 left-5 flex h-36 w-36 items-center justify-center rounded-full bg-accent text-ink shadow-xl lg:bottom-20 lg:left-[8%] lg:h-44 lg:w-44"
+      >
+        <svg viewBox="0 0 100 100" class="absolute inset-0 h-full w-full animate-spin-slow" aria-hidden="true">
+          <defs>
+            <path id="hero-badge" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"></path>
+          </defs>
+          <text class="fill-current text-[7.6px] font-bold uppercase" letter-spacing="1.6">
+            <textPath href="#hero-badge" textLength="236" lengthAdjust="spacing">{badgeText}</textPath>
+          </text>
+        </svg>
+        <span class="font-display text-4xl leading-none lg:text-5xl">{badgeValue}</span>
+      </div>
+    </div>
+  </div>
+</section>

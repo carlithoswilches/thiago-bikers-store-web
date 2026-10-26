@@ -1,0 +1,132 @@
+---
+// Política de Tratamiento de Datos Personales (Ley 1581 de 2012 y Decreto 1377 de 2013, compilado en el Decreto 1074 de 2015).
+// PENDIENTE: agregar la dirección del responsable cuando Thiago actualice sus datos en la Cámara de Comercio
+// (el decreto pide domicilio y dirección en la identificación del responsable).
+import PageLayout from "@/layouts/PageLayout.astro";
+import { site } from "@/data/site";
+
+const empresa = site.legal?.razonSocial ?? site.name;
+const nit = site.legal?.nit;
+const vigencia = "18 de octubre de 2026";
+---
+
+<PageLayout
+  eyebrow="Información legal"
+  title="Política de tratamiento de datos personales"
+  description={`Cómo ${site.name} recoge, usa y protege los datos personales de sus clientes, y cómo ejercer tus derechos.`}
+  updated={vigencia}
+  prose
+>
+  <p>
+    En {site.name} cuidamos los datos que nos confías cuando cotizas o haces un pedido. Esta política explica qué datos recogemos,
+    para qué los usamos y cómo puedes conocerlos, corregirlos o pedir que los borremos.
+  </p>
+
+  <h2>1. Responsable de tus datos</h2>
+  <ul>
+    <li><strong>Razón social:</strong> {empresa}</li>
+    {nit && <li><strong>NIT:</strong> {nit}</li>}
+    {site.email && <li><strong>Correo:</strong> <a href={`mailto:${site.email}`}>{site.email}</a></li>}
+    {site.phoneDisplay && <li><strong>Teléfono y WhatsApp:</strong> {site.phoneDisplay}</li>}
+    {site.phone2 && <li><strong>Otro teléfono:</strong> {site.phone2.display}</li>}
+  </ul>
+
+  <h2>2. Normas que aplican</h2>
+  <p>
+    Esta política cumple la Ley 1581 de 2012 de protección de datos personales, el Decreto 1377 de 2013 (hoy incluido en el
+    Decreto 1074 de 2015) y las normas que los modifiquen o reemplacen.
+  </p>
+
+  <h2>3. Qué datos recogemos</h2>
+  <ul>
+    <li><strong>De contacto:</strong> nombre, número de teléfono o WhatsApp, correo y ciudad.</li>
+    <li><strong>Del pedido:</strong> nombre del club, equipo o empresa, tallas, y los nombres y números que se estampan en cada prenda.</li>
+    <li>
+      <strong>Tipo de sangre (RH):</strong> solo cuando el cliente pide que se imprima en la prenda, como se acostumbra en los
+      uniformes de moteros y ciclistas. Es un dato sensible (ver punto 5).
+    </li>
+    <li><strong>Imágenes:</strong> fotos de las prendas entregadas en las que pueden aparecer las personas que las usan.</li>
+    <li><strong>Para el pago y la factura:</strong> los datos que exige la ley para facturar.</li>
+  </ul>
+
+  <h2>4. Para qué los usamos</h2>
+  <ul>
+    <li>Responder tus cotizaciones y preguntas.</li>
+    <li>Diseñar, producir y entregar las prendas que pides.</li>
+    <li>Coordinar pagos, facturación y, si aplica, el envío.</li>
+    <li>Atender peticiones, quejas, reclamos y garantías.</li>
+    <li>Publicar fotos de trabajos entregados en esta página y en nuestras redes, solo con autorización de quienes aparecen.</li>
+    <li>Enviarte novedades y promociones, solo si lo autorizas, y dentro de los horarios que permite la Ley 2300 de 2023.</li>
+  </ul>
+  <p>No vendemos ni alquilamos tus datos.</p>
+
+  <h2>5. Datos sensibles: el tipo de sangre (RH)</h2>
+  <p>
+    El RH es un dato de salud y la ley lo trata como sensible. <strong>Darlo es opcional:</strong> no tienes que entregarlo para
+    cotizar o comprar. Si quieres que vaya impreso en tu prenda, lo usamos solo para eso y con tu autorización expresa. Cuando
+    un club nos entrega los datos de sus integrantes, quien hace el pedido confirma que cada persona autorizó entregar su
+    nombre y su RH.
+  </p>
+
+  <h2>6. Fotos y datos de niñas, niños y adolescentes</h2>
+  <p>
+    Solo usamos datos o fotos de menores de edad con autorización de su padre, madre o representante legal, respetando siempre
+    sus derechos y su interés superior.
+  </p>
+
+  <h2>7. Tus derechos</h2>
+  <p>Como titular de tus datos puedes:</p>
+  <ul>
+    <li>Conocer, actualizar y corregir tus datos.</li>
+    <li>Pedir prueba de la autorización que nos diste.</li>
+    <li>Saber para qué hemos usado tus datos.</li>
+    <li>Revocar tu autorización o pedir que borremos tus datos, salvo que debamos conservarlos por una obligación legal o de un contrato vigente.</li>
+    <li>Consultar tus datos gratis.</li>
+    <li>Presentar quejas ante la Superintendencia de Industria y Comercio (SIC), después de haber hecho tu solicitud con nosotros.</li>
+  </ul>
+
+  <h2>8. Cómo ejercer tus derechos</h2>
+  <p>
+    Escríbenos {site.email && <>al correo <a href={`mailto:${site.email}`}>{site.email}</a></>}
+    {site.phoneDisplay && <> o por WhatsApp al {site.phoneDisplay}</>} con tu nombre completo, número de identificación, lo que
+    solicitas y el medio por el que quieres la respuesta.
+  </p>
+  <ul>
+    <li>
+      <strong>Consultas</strong> (saber qué datos tenemos y cómo los usamos): respondemos en máximo 10 días hábiles. Si no es
+      posible, te explicamos el motivo y respondemos en máximo 5 días hábiles más.
+    </li>
+    <li>
+      <strong>Reclamos</strong> (corregir, actualizar o borrar datos, o revocar la autorización): respondemos en máximo 15 días
+      hábiles. Si falta información, te la pedimos en los 5 días siguientes; si pasan 2 meses sin recibirla, se entiende que
+      desististe. Si no podemos responder a tiempo, te avisamos y respondemos en máximo 8 días hábiles más.
+    </li>
+  </ul>
+
+  <h2>9. Con quién compartimos tus datos</h2>
+  <p>Solo con quienes necesitamos para atender tu pedido, y únicamente lo necesario:</p>
+  <ul>
+    <li>WhatsApp (de Meta) y el correo electrónico, que son nuestros canales de atención.</li>
+    <li>La empresa de transporte, cuando hay envío.</li>
+    <li>Las autoridades, cuando la ley lo exige.</li>
+  </ul>
+
+  <h2>10. Cuánto tiempo los guardamos y cómo los protegemos</h2>
+  <p>
+    Guardamos tus datos mientras sean necesarios para las finalidades de esta política y para cumplir obligaciones legales, como
+    las contables y tributarias. Tomamos medidas razonables para evitar que se pierdan, se usen sin permiso o lleguen a personas
+    no autorizadas.
+  </p>
+
+  <h2>11. Esta página web</h2>
+  <p>
+    Esta página no guarda los datos que escribes. El formulario de cotización solo arma el mensaje y lo abre en WhatsApp para que
+    tú lo envíes. Sobre cookies, mira nuestra <a href="/cookies">política de cookies</a>.
+  </p>
+
+  <h2>12. Cambios y vigencia</h2>
+  <p>
+    Esta política rige desde el {vigencia}. Si la cambiamos, publicaremos la nueva versión en esta misma página con su fecha, y
+    si el cambio afecta lo que autorizaste, te lo informaremos antes de aplicarlo.
+  </p>
+</PageLayout>

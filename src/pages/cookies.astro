@@ -1,0 +1,60 @@
+---
+// Política de cookies. Si se agregan estadísticas, mapas u otras herramientas con cookies,
+// hay que actualizar esta página y cargarlas solo con la elección "aceptadas" (ver CookieBanner.astro).
+import PageLayout from "@/layouts/PageLayout.astro";
+import { site } from "@/data/site";
+
+const vigencia = "18 de octubre de 2026";
+---
+
+<PageLayout
+  eyebrow="Información legal"
+  title="Política de cookies"
+  description={`Qué cookies usa la página de ${site.name} y cómo cambiar tu elección.`}
+  updated={vigencia}
+  prose
+>
+  <h2>1. Qué son las cookies</h2>
+  <p>
+    Son pequeños archivos que algunas páginas guardan en tu navegador para recordar información, por ejemplo, tus preferencias o
+    cómo navegas. Algunas son necesarias para que una página funcione y otras se usan para estadísticas o publicidad.
+  </p>
+
+  <h2>2. Qué usa esta página</h2>
+  <ul>
+    <li><strong>No usamos cookies de publicidad ni de análisis</strong>, ni propias ni de terceros.</li>
+    <li>
+      <strong>Solo guardamos tu elección del aviso de cookies</strong> en el almacenamiento de tu navegador, con el nombre
+      <code>tbs-cookies</code> y la fecha en que elegiste. No te identifica y no se envía a ningún servidor.
+    </li>
+    <li>Las fuentes, las imágenes y el resto de la página se cargan desde nuestro propio sitio, sin conectarse a otros servicios.</li>
+  </ul>
+
+  <h2>3. Enlaces a otras plataformas</h2>
+  <p>
+    Cuando tocas los botones de WhatsApp, Instagram, Facebook o Threads, sales de esta página y aplican las políticas de privacidad
+    y de cookies de esas plataformas (Meta).
+  </p>
+
+  <h2>4. Si esto cambia</h2>
+  <p>
+    Si más adelante agregamos herramientas que usen cookies, como estadísticas de visitas o un mapa, solo se activarán si las
+    aceptas en el aviso, y actualizaremos esta política explicando cuáles son y para qué sirven.
+  </p>
+
+  <h2>5. Cómo cambiar tu elección</h2>
+  <p>
+    Puedes cambiarla cuando quieras con el botón de abajo o desde "Configurar cookies" en el pie de la página. También puedes borrar
+    los datos de este sitio desde la configuración de tu navegador.
+  </p>
+  <p>
+    <button type="button" data-cookie-settings class="pill not-prose bg-primary text-primary-fg hover:opacity-90">Configurar cookies</button>
+  </p>
+
+  <h2>6. Contacto</h2>
+  <p>
+    Si tienes preguntas sobre esta política o sobre tus datos, escríbenos
+    {site.email && <>a <a href={`mailto:${site.email}`}>{site.email}</a></>}. También puedes leer nuestra{" "}
+    <a href="/politica-de-datos">política de tratamiento de datos personales</a>.
+  </p>
+</PageLayout>

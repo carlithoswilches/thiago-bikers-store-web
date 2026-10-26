@@ -1,0 +1,194 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "@/data/site";
+import { directionsHref, hasAddress, mailHref, mapEmbedSrc, socialLinks, tel2Href, telHref, whatsappHref } from "@/data/links";
+import { unsplash } from "@/data/types";
+import Aparecer from "@/components/animados/Aparecer";
+
+const { contact } = site;
+---
+
+<section id="contacto" class="py-24 md:py-32">
+  <div class="mx-auto grid max-w-7xl gap-6 px-5 lg:grid-cols-12">
+    <!-- Bloque de color con datos y acciones -->
+    <div
+      class="relative overflow-hidden rounded-[2.5rem] bg-primary p-8 text-primary-fg sm:p-12 lg:col-span-5"
+      data-reveal
+    >
+      <div aria-hidden="true" class="absolute -bottom-24 -right-24 h-72 w-72 rounded-full border-[48px] border-current opacity-10"></div>
+      <p class="text-xs font-semibold uppercase tracking-[0.26em] opacity-75">{contact.eyebrow}</p>
+      <h2 class="mt-5 font-display text-4xl leading-[1.04] tracking-tight md:text-5xl">{contact.title}</h2>
+      <p class="mt-5 text-lg opacity-85">{contact.text}</p>
+
+      <dl class="relative mt-10 space-y-5">
+        {/* La dirección solo aparece cuando está confirmada */}
+        {
+          hasAddress && (
+            <div class="flex gap-4">
+              <Icon name="bx:map" class="mt-0.5 h-6 w-6 shrink-0 opacity-80" />
+              <div>
+                <dt class="text-xs uppercase tracking-widest opacity-70">Dirección</dt>
+                <dd class="mt-1 font-medium">{`${site.address} · ${site.neighborhood}, ${site.city}`}</dd>
+              </div>
+            </div>
+          )
+        }
+        {
+          site.phoneDisplay && telHref && (
+            <div class="flex gap-4">
+              <Icon name="bx:phone" class="mt-0.5 h-6 w-6 shrink-0 opacity-80" />
+              <div>
+                <dt class="text-xs uppercase tracking-widest opacity-70">Teléfonos</dt>
+                <dd class="mt-1 font-medium">
+                  <a href={telHref} class="hover:underline">
+                    {site.phoneDisplay}
+                  </a>
+                  {site.phone2 && tel2Href && (
+                    <>
+                      {" · "}
+                      <a href={tel2Href} class="hover:underline">
+                        {site.phone2.display}
+                      </a>
+                    </>
+                  )}
+                </dd>
+              </div>
+            </div>
+          )
+        }
+        {
+          site.email && mailHref && (
+            <div class="flex gap-4">
+              <Icon name="bx:envelope" class="mt-0.5 h-6 w-6 shrink-0 opacity-80" />
+              <div>
+                <dt class="text-xs uppercase tracking-widest opacity-70">Correo</dt>
+                <dd class="mt-1 break-all font-medium">
+                  <a href={mailHref} class="hover:underline">
+                    {site.email}
+                  </a>
+                </dd>
+              </div>
+            </div>
+          )
+        }
+        <div class="flex gap-4">
+          <Icon name="bx:time-five" class="mt-0.5 h-6 w-6 shrink-0 opacity-80" />
+          <div>
+            <dt class="text-xs uppercase tracking-widest opacity-70">Horario</dt>
+            <dd class="mt-1 font-medium">{site.hours}</dd>
+          </div>
+        </div>
+      </dl>
+
+      <div class="relative mt-10 flex flex-wrap gap-3">
+        {
+          whatsappHref && (
+            <a href={whatsappHref} target="_blank" rel="noopener noreferrer" class="pill bg-primary-fg text-primary hover:opacity-90">
+              <Icon name="bx:bxl-whatsapp" class="h-5 w-5" />
+              WhatsApp
+            </a>
+          )
+        }
+        {
+          telHref && (
+            <a href={telHref} class="pill border border-primary-fg/40 hover:bg-primary-fg/10">
+              <Icon name="bx:phone-call" class="h-5 w-5" />
+              Llamar
+            </a>
+          )
+        }
+        {
+          hasAddress && (
+            <a href={directionsHref} target="_blank" rel="noopener noreferrer" class="pill border border-primary-fg/40 hover:bg-primary-fg/10">
+              <Icon name="bx:navigation" class="h-5 w-5" />
+              Cómo llegar
+            </a>
+          )
+        }
+        <a href="/contacto" class="pill border border-primary-fg/40 hover:bg-primary-fg/10">
+          <Icon name="bx:message-square-detail" class="h-5 w-5" />
+          Formulario de cotización
+        </a>
+      </div>
+
+      {
+        socialLinks.length > 0 && (
+          <div class="relative mt-8 flex items-center gap-3 border-t border-primary-fg/20 pt-6 text-sm">
+            <span class="opacity-75">Síguenos</span>
+            {socialLinks.map((s) => (
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${site.shortName} en ${s.label}`}
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-fg/15 transition hover:bg-primary-fg hover:text-primary"
+              >
+                <Icon name={s.icon} class="h-5 w-5" />
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+
+    <!-- Lado derecho: mapa (con dirección), logo grande, mosaico de trabajos o una foto -->
+    {
+      !hasAddress && contact.visual === "logo" && site.logo ? (
+        <div class="relative flex min-h-[24rem] flex-col items-center justify-center overflow-hidden rounded-[2.5rem] border border-line bg-surface px-8 py-14 text-center lg:col-span-7" data-reveal style="--d:120ms">
+          {/* Bandera a cuadros muy suave de fondo, que se desvanece hacia los bordes */}
+          <div
+            aria-hidden="true"
+            class="absolute inset-0 opacity-[0.07] [background:repeating-conic-gradient(var(--color-fg)_0_25%,transparent_0_50%)_0_0/56px_56px] [mask-image:radial-gradient(closest-side,black,transparent)]"
+          />
+          <img src={site.logo.src} alt={site.logo.alt} width={site.logo.width} height={site.logo.height} loading="lazy" class="relative w-full max-w-xl" />
+          {site.socials?.instagram && (
+            <>
+              <p class="relative mt-10 max-w-sm text-muted">Mira sus trabajos más recientes en Instagram.</p>
+              <a
+                href={site.socials.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="pill relative mt-5 border border-fg/15 text-fg hover:border-primary hover:bg-primary hover:text-primary-fg"
+              >
+                <Icon name="bx:bxl-instagram" class="h-5 w-5" />
+                @thiago_bikers_store_oficial
+              </a>
+            </>
+          )}
+        </div>
+      ) : !hasAddress && Array.isArray(contact.visual) ? (
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:col-span-7">
+          {contact.visual.slice(0, 4).map((foto, i) => (
+            // Las fotos aparecen una tras otra al llegar a la pantalla (Motion)
+            <Aparecer client:idle indice={i} className="h-full">
+              <figure class="group relative h-full overflow-hidden rounded-[2rem]">
+                <img
+                  src={unsplash(foto.id, 800)}
+                  alt={foto.alt}
+                  loading="lazy"
+                  class="aspect-square h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </figure>
+            </Aparecer>
+          ))}
+        </div>
+      ) : (
+    <div class="relative min-h-[24rem] overflow-hidden rounded-[2.5rem] border border-line lg:col-span-7" data-reveal style="--d:120ms">
+      {
+        hasAddress || !contact.image ? (
+          <iframe
+            title={`Mapa de ${site.name}`}
+            src={mapEmbedSrc}
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            class="absolute inset-0 h-full w-full [filter:saturate(0.8)_contrast(1.05)]"
+          />
+        ) : (
+          <img src={unsplash(contact.image.id, 1400)} alt={contact.image.alt} loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
+        )
+      }
+    </div>
+      )
+    }
+  </div>
+</section>

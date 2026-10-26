@@ -1,0 +1,109 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "@/data/site";
+import { hasAddress, legalLinks, mailHref, socialLinks, tel2Href, telHref } from "@/data/links";
+---
+
+<footer class="bg-ink text-ink-fg">
+  <div class="mx-auto max-w-7xl px-5 pb-8 pt-20">
+    <p
+      aria-hidden="true"
+      class="select-none font-display text-[clamp(3.5rem,13vw,11rem)] leading-[0.85] tracking-[-0.03em] text-ink-fg"
+    >
+      {site.shortName}<span class="text-primary">.</span>
+    </p>
+
+    <div class="mt-14 grid gap-8 border-t border-ink-fg/15 pt-10 text-sm sm:grid-cols-2 lg:grid-cols-4">
+      <!-- Empresa: razón social y NIT (Estatuto del Consumidor, art. 50) -->
+      <div>
+        {site.logo && <img src={site.logo.src} alt={site.logo.alt} width={site.logo.width} height={site.logo.height} loading="lazy" class="mb-5 h-20 w-auto" />}
+        {
+          site.legal && (
+            <p class="text-ink-fg/85">
+              {site.legal.razonSocial}
+              <br />
+              NIT {site.legal.nit}
+            </p>
+          )
+        }
+        {/* La dirección solo aparece cuando está confirmada */}
+        {hasAddress && <p class="mt-3 text-ink-fg/85">{site.address}<br />{site.neighborhood}, {site.city}</p>}
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-widest text-ink-fg/50">Horario</p>
+        <p class="mt-3 text-ink-fg/85">{site.hours}</p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-widest text-ink-fg/50">Contacto</p>
+        {
+          site.phoneDisplay && telHref && (
+            <a href={telHref} class="mt-3 block text-ink-fg/85 hover:text-accent">
+              {site.phoneDisplay} <span class="text-ink-fg/50">(WhatsApp)</span>
+            </a>
+          )
+        }
+        {
+          site.phone2 && tel2Href && (
+            <a href={tel2Href} class="mt-1 block text-ink-fg/85 hover:text-accent">
+              {site.phone2.display}
+            </a>
+          )
+        }
+        {
+          site.email && mailHref && (
+            <a href={mailHref} class="mt-1 block break-all text-ink-fg/85 hover:text-accent">
+              {site.email}
+            </a>
+          )
+        }
+        {
+          socialLinks.length > 0 && (
+            <div class="mt-5 flex gap-2">
+              {socialLinks.map((s) => (
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${site.shortName} en ${s.label}`}
+                  class="flex h-10 w-10 items-center justify-center rounded-full border border-ink-fg/20 text-ink-fg/85 transition hover:border-accent hover:text-accent"
+                >
+                  <Icon name={s.icon} class="h-5 w-5" />
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </div>
+
+      <!-- Enlaces legales y canal de quejas -->
+      <div>
+        <p class="text-xs uppercase tracking-widest text-ink-fg/50">Información legal</p>
+        <ul class="mt-3 space-y-1">
+          {
+            legalLinks.map((l) => (
+              <li>
+                <a href={l.href} class="text-ink-fg/85 hover:text-accent">
+                  {l.label}
+                </a>
+              </li>
+            ))
+          }
+          <li>
+            <a href="/contacto#pqr" class="text-ink-fg/85 hover:text-accent">Peticiones, quejas y reclamos</a>
+          </li>
+          <li>
+            <!-- Vuelve a abrir el aviso de cookies (ver CookieBanner.astro) -->
+            <button type="button" data-cookie-settings class="text-ink-fg/85 hover:text-accent">Configurar cookies</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col gap-2 text-xs text-ink-fg/45 sm:flex-row sm:justify-between">
+      <p>© {new Date().getFullYear()} {site.legal?.razonSocial ?? site.name}. Todos los derechos reservados.</p>
+      <p>{site.photoCredit ?? "Fotografías ilustrativas: Unsplash"}</p>
+    </div>
+  </div>
+</footer>

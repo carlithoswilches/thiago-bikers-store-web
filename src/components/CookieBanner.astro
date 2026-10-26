@@ -1,0 +1,75 @@
+---
+// Aviso de cookies.
+// La página hoy NO usa cookies de publicidad ni de análisis: el aviso informa y guarda la elección
+// en el navegador (localStorage, clave "tbs-cookies"). Si algún día se agregan estadísticas
+// (Google Analytics, Pixel de Meta, etc.), deben cargarse SOLO cuando la elección sea "aceptadas":
+//   - al cargar: document.documentElement.dataset.cookies === "aceptadas"
+//   - o escuchando el evento: window.addEventListener("tbs:cookies", (e) => e.detail === "aceptadas" && ...)
+// Y hay que actualizar la página /cookies con lo que se agregue.
+---
+
+<div
+  id="aviso-cookies"
+  role="dialog"
+  aria-labelledby="aviso-cookies-titulo"
+  aria-describedby="aviso-cookies-texto"
+  hidden
+  class="fixed inset-x-3 bottom-3 z-[60] rounded-[1.5rem] border border-line bg-surface p-5 text-sm shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] sm:inset-x-auto sm:bottom-5 sm:left-5 sm:max-w-md sm:p-6"
+>
+  <p id="aviso-cookies-titulo" class="font-display text-lg tracking-tight text-fg">Cookies y privacidad</p>
+  <p id="aviso-cookies-texto" class="mt-2 text-muted">
+    Esta página no usa cookies de publicidad ni de análisis. Solo guardamos en tu navegador la opción que elijas aquí.
+    Si más adelante agregamos herramientas que usen cookies, solo se activarán si las aceptas.{" "}
+    <a href="/cookies" class="font-semibold text-fg underline underline-offset-2 hover:text-primary">Política de cookies</a>
+  </p>
+  <div class="mt-4 flex gap-2">
+    <button type="button" data-aceptar class="pill flex-1 bg-primary py-2.5 text-primary-fg hover:opacity-90">Aceptar</button>
+    <button type="button" data-rechazar class="pill flex-1 border border-fg/20 py-2.5 text-fg hover:border-fg/50">Rechazar</button>
+  </div>
+</div>
+
+<script>
+  const CLAVE = "tbs-cookies";
+  const aviso = document.getElementById("aviso-cookies") as HTMLElement;
+
+  // Lee la elección guardada (puede fallar en modo privado o con el almacenamiento bloqueado)
+  function leer(): { valor: string } | null {
+    try {
+      return JSON.parse(localStorage.getItem(CLAVE) ?? "null");
+    } catch {
+      return null;
+    }
+  }
+
+  // Deja la elección disponible para otros scripts y avisa con un evento
+  function aplicar(valor: string) {
+    document.documentElement.dataset.cookies = valor;
+    window.dispatchEvent(new CustomEvent("tbs:cookies", { detail: valor }));
+  }
+
+  function guardar(valor: "aceptadas" | "rechazadas") {
+    try {
+      localStorage.setItem(CLAVE, JSON.stringify({ valor, fecha: new Date().toISOString() }));
+    } catch {
+      // Si no se puede guardar, la elección vale solo para esta visita
+    }
+    aplicar(valor);
+    aviso.hidden = true;
+  }
+
+  // Al entrar: si ya eligió, se respeta; si no, se muestra el aviso
+  const previa = leer();
+  if (previa?.valor) aplicar(previa.valor);
+  else aviso.hidden = false;
+
+  aviso.querySelector("[data-aceptar]")?.addEventListener("click", () => guardar("aceptadas"));
+  aviso.querySelector("[data-rechazar]")?.addEventListener("click", () => guardar("rechazadas"));
+
+  // "Configurar cookies" (en el pie de página y en /cookies) vuelve a abrir el aviso
+  document.querySelectorAll("[data-cookie-settings]").forEach((boton) =>
+    boton.addEventListener("click", () => {
+      aviso.hidden = false;
+      (aviso.querySelector("[data-aceptar]") as HTMLElement | null)?.focus();
+    }),
+  );
+</script>

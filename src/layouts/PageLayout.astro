@@ -1,0 +1,39 @@
+---
+// Plantilla de las páginas internas (contacto y políticas): encabezado con el estilo de la página principal.
+// Con `prose` el contenido se muestra como texto largo legible (títulos, párrafos y listas con estilo).
+import Layout from "./Layout.astro";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+  intro?: string;
+  /** Fecha visible de la última actualización (políticas) */
+  updated?: string;
+  prose?: boolean;
+}
+const { eyebrow, title, description, intro, updated, prose = false } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+  <section class="border-b border-line">
+    <div class="mx-auto max-w-7xl px-5 pb-14 pt-16 md:pb-20 md:pt-24">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1 class="mt-5 max-w-4xl font-display text-4xl leading-[1.02] tracking-tight md:text-6xl">{title}</h1>
+      {intro && <p class="mt-6 max-w-2xl text-lg text-muted">{intro}</p>}
+      {updated && <p class="mt-6 text-sm text-muted">Última actualización: {updated}</p>}
+    </div>
+  </section>
+
+  {
+    prose ? (
+      <div class="mx-auto max-w-7xl px-5 py-14 md:py-20">
+        <article class="prose prose-invert max-w-3xl prose-headings:font-display prose-headings:uppercase prose-headings:tracking-tight prose-headings:text-fg prose-h2:mt-12 prose-h2:text-2xl md:prose-h2:text-3xl prose-p:text-muted prose-li:text-muted prose-strong:text-fg prose-a:text-fg prose-a:underline-offset-2 hover:prose-a:text-primary prose-li:marker:text-primary">
+          <slot />
+        </article>
+      </div>
+    ) : (
+      <slot />
+    )
+  }
+</Layout>

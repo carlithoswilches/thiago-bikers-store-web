@@ -1,0 +1,21 @@
+---
+// Franja de texto en movimiento (estilo pista de carreras) que acelera al bajar la página.
+// El efecto es una isla de React (FranjaVelocidad) que se carga cuando la franja llega a la pantalla.
+import { site } from "@/data/site";
+import FranjaVelocidad from "@/components/animados/FranjaVelocidad";
+---
+
+{
+  site.franja && site.franja.length > 0 && (
+    <section aria-label="Lo que hacemos" class="overflow-hidden border-y border-line bg-surface py-8 md:py-10">
+      <FranjaVelocidad
+        client:visible
+        filas={site.franja}
+        velocidad={55}
+        className="py-1 font-display text-4xl uppercase leading-none tracking-tight text-fg md:text-6xl"
+        claseAlterna="text-primary"
+        separador="/"
+      />
+    </section>
+  )
+}

@@ -1,0 +1,53 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "@/data/site";
+import { directionsHref } from "@/data/links";
+---
+
+<section class="relative overflow-hidden bg-ink py-24 text-ink-fg md:py-32">
+  <span
+    aria-hidden="true"
+    class="pointer-events-none absolute -top-24 left-2 select-none font-display text-[22rem] leading-none text-primary/25 md:left-10 md:text-[30rem]"
+    >“</span
+  >
+  <div class="relative mx-auto max-w-7xl px-5">
+    <div class="grid gap-12 lg:grid-cols-12">
+      <figure class="lg:col-span-9" data-reveal>
+        <blockquote class="font-display text-3xl leading-[1.15] tracking-tight sm:text-5xl md:text-6xl">
+          {site.quote.text}
+        </blockquote>
+        <figcaption class="mt-8 flex items-center gap-3 text-sm uppercase tracking-[0.2em] text-ink-fg/60">
+          <span class="h-px w-10 bg-accent"></span>
+          {site.quote.source}
+        </figcaption>
+      </figure>
+
+      <div class="flex flex-col justify-end gap-5 lg:col-span-3" data-reveal style="--d:120ms">
+        {
+          site.rating ? (
+            <>
+              <div class="flex gap-1 text-accent">
+                {Array.from({ length: 5 }).map(() => <Icon name="bx:bxs-star" class="h-6 w-6" />)}
+              </div>
+              <p class="text-ink-fg/75">
+                <strong class="font-display text-3xl text-ink-fg">{site.rating.toFixed(1)}</strong>
+                {` de 5 con ${(site.reviews ?? 0).toLocaleString("es-CO")} opiniones en Google Maps.`}
+              </p>
+            </>
+          ) : (
+            site.quote.aside && <p class="text-ink-fg/75">{site.quote.aside.text}</p>
+          )
+        }
+        <a
+          href={site.rating ? directionsHref : (site.quote.aside?.href ?? directionsHref)}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="pill self-start border border-ink-fg/25 text-ink-fg hover:border-accent hover:text-accent"
+        >
+          {site.rating ? "Leer opiniones" : (site.quote.aside?.cta ?? "Ver más")}
+          <Icon name="bx:link-external" class="h-4 w-4" />
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

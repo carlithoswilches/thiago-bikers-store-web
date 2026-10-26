@@ -1,0 +1,24 @@
+/* Thiago Bikers Store: paleta tomada de su escudo y su letrero (negro, rojo de carreras y cromo) */
+@theme {
+  --color-bg: #0f0f10;
+  --color-surface: #1b1b1d;
+  --color-fg: #f2f2f0;
+  --color-muted: #a6a6a2;
+  --color-line: #2d2d30;
+  --color-primary: #d7261e;
+  --color-primary-fg: #ffffff;
+  --color-accent: #cfd3d8;
+  --color-ink: #1c1c1f;
+  --color-ink-fg: #f2f2f0;
+}
+
+.font-display {
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Saira Condensed en mayúsculas: un poco de aire entre letras */
+h1.font-display,
+h2.font-display {
+  letter-spacing: -0.005em;
+}
